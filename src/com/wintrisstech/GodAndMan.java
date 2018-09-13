@@ -1,6 +1,6 @@
 package com.wintrisstech;
 /**************************************************************************
- * Initial ver 0.9 9/11/18
+ * Initial ver 1.0 9/11/18
  * Copyright 2018 Vic Wintriss
  **************************************************************************/
 
@@ -24,12 +24,15 @@ public class GodAndMan extends JComponent implements ActionListener, Runnable
     private Ellipse2D.Double limit = new Ellipse2D.Double(1, 1, 1, 1);
     private ArrayList<Ellipse2D.Double> circles = new ArrayList<Ellipse2D.Double>();
     private ArrayList<Line2D.Double> lines = new ArrayList<Line2D.Double>();
-    private Timer paintTicker = new Timer(500, this); //Ticks every 20 milliseconds (50 times per second); calls on actionPerformed() when it ticks.
+    private Timer paintTicker = new Timer(50, this); //Ticks every 20 milliseconds (50 times per second); calls on actionPerformed() when it ticks.
     private int outerRingRadius = heightOfScreen / 2;
     private int outerRingDiameter = heightOfScreen;
     private int innerRingRadius;
     private int innerRingDiameter;
     private int theta;
+    float[] dist = { 0f, 1f};
+    Color[] colors = { new Color(0, 0, 0, 0), new Color(0, 0, 0, 255)};
+    Point2D.Double center = new Point2D.Double(outerRingRadius, outerRingRadius);
 
     public static void main(String[] args)
     {
@@ -58,23 +61,46 @@ public class GodAndMan extends JComponent implements ActionListener, Runnable
             Line2D.Double newLine = (new Line2D.Double(x, y, outerRingRadius, outerRingRadius));
             lines.add(newLine);
         }
+        paintTicker.stop();
         System.out.println("GodAndMan.run finished normally");
     }
 
     public void paint(Graphics g)
     {
         Graphics2D g2 = (Graphics2D) g;
-        g2.setColor(Color.pink);
-        g2.fill(universe);
-        g2.setColor(Color.black);
+        drawVisibilityCircle(g2);
         for (Ellipse2D.Double ellipse : circles)
         {
+            g2.setColor(Color.white);
             g2.draw(ellipse);
         }
         for (Line2D.Double line : lines)
         {
             g2.draw(line);
         }
+    }
+    private static void drawVisibilityCircle(Graphics2D g2d){
+        Point center = new Point(800, 800);
+        float radius = 800;
+        float[] dist = { 0f, 1f};
+        Color[] colors = { new Color(255, 255, 0, 0), new Color(0, 0, 0, 255)};
+        //workaround to prevent background color from showing
+        drawBackGroundCircle(g2d, radius, Color.WHITE, center);
+        drawGradientCircle(g2d, radius, dist, colors, center);
+    }
+
+    private static void drawBackGroundCircle(Graphics2D g2d, float radius, Color color, Point2D center){
+
+        g2d.setColor(color);
+        radius -= 1;//make radius a bit smaller to prevent fuzzy edge
+        g2d.fill(new Ellipse2D.Double(center.getX() - radius, center.getY()
+                - radius, radius * 2, radius * 2));
+    }
+
+    private static void drawGradientCircle(Graphics2D g2d, float radius, float[] dist, Color[] colors, Point2D center){
+        RadialGradientPaint rgp = new RadialGradientPaint(center, radius, dist, colors);
+        g2d.setPaint(rgp);
+        g2d.fill(new Ellipse2D.Double(center.getX() - radius, center.getY() - radius, radius * 2, radius * 2));
     }
 
     @Override
