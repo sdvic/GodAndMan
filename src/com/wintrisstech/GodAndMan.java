@@ -1,8 +1,8 @@
 package com.wintrisstech;
-/**************************************************************************
- * Initial ver 1.1 9/13/18
- * Copyright 2018 Vic Wintriss
- **************************************************************************/
+ /*************************************************************************/
+ /* Initial ver 1.1 9/13/18                                                /
+ /* Copyright 2018 Vic Wintriss                                            /
+ /*************************************************************************/
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,9 +23,6 @@ public class GodAndMan extends JComponent implements ActionListener, Runnable
     private Timer paintTicker = new Timer(50, this); //Ticks every 20 milliseconds (50 times per second); calls on actionPerformed() when it ticks.
     private int outerRingRadius = heightOfScreen / 2;
     private int outerRingDiameter = heightOfScreen;
-    float[] dist = {0f, 1f};
-    Color[] colors = {new Color(0, 0, 0, 0), new Color(0, 0, 0, 255)};
-    Point2D.Double center = new Point2D.Double(outerRingRadius, outerRingRadius);
 
     public static void main(String[] args)
     {
@@ -66,8 +63,8 @@ public class GodAndMan extends JComponent implements ActionListener, Runnable
                 RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setColor(Color.BLACK);
         g2.fillRect(0, 0, widthOfScreen, heightOfScreen);
-        Point2D center = new Point2D.Float(800, 800);
-        float radius = 800;
+        Point2D center = new Point2D.Float(outerRingRadius, outerRingRadius);
+        float radius = outerRingRadius;
         float[] dist = {0.0f, 1.0f};
         Color[] colors = {Color.yellow, Color.BLUE};
         RadialGradientPaint p = new RadialGradientPaint(center, radius, dist, colors);
