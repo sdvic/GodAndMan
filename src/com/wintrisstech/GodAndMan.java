@@ -1,6 +1,6 @@
 package com.wintrisstech;
 /**************************************************************************
- * Initial ver 1.0 9/11/18
+ * Initial ver 1.1 9/13/18
  * Copyright 2018 Vic Wintriss
  **************************************************************************/
 
@@ -8,11 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
+import java.awt.geom.*;
 import java.util.ArrayList;
 
 public class GodAndMan extends JComponent implements ActionListener, Runnable
@@ -27,11 +23,8 @@ public class GodAndMan extends JComponent implements ActionListener, Runnable
     private Timer paintTicker = new Timer(50, this); //Ticks every 20 milliseconds (50 times per second); calls on actionPerformed() when it ticks.
     private int outerRingRadius = heightOfScreen / 2;
     private int outerRingDiameter = heightOfScreen;
-    private int innerRingRadius;
-    private int innerRingDiameter;
-    private int theta;
-    float[] dist = { 0f, 1f};
-    Color[] colors = { new Color(0, 0, 0, 0), new Color(0, 0, 0, 255)};
+    float[] dist = {0f, 1f};
+    Color[] colors = {new Color(0, 0, 0, 0), new Color(0, 0, 0, 255)};
     Point2D.Double center = new Point2D.Double(outerRingRadius, outerRingRadius);
 
     public static void main(String[] args)
@@ -48,13 +41,14 @@ public class GodAndMan extends JComponent implements ActionListener, Runnable
         mainGameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainGameWindow.setVisible(true);
         paintTicker.start();
+        int innerRingDiameter;
         for (innerRingDiameter = 0; innerRingDiameter < outerRingDiameter + 10; innerRingDiameter += 10)
         {
-            innerRingRadius = innerRingDiameter / 2;
+            int innerRingRadius = innerRingDiameter / 2;
             circles.add(new Ellipse2D.Double(outerRingRadius - innerRingRadius, outerRingRadius - innerRingRadius, innerRingDiameter, innerRingDiameter));
         }
         int i = 0;
-        for (theta = 0; theta < 360; theta += 1) // Degrees
+        for (int theta = 0; theta < 360; theta += 1) // Degrees
         {
             int y = (int) (outerRingRadius - (outerRingRadius * Math.sin(Math.toRadians(theta))));
             int x = (int) (outerRingRadius + (outerRingRadius * Math.cos(Math.toRadians(theta))));
@@ -68,28 +62,42 @@ public class GodAndMan extends JComponent implements ActionListener, Runnable
     public void paint(Graphics g)
     {
         Graphics2D g2 = (Graphics2D) g;
-        drawVisibilityCircle(g2);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setColor(Color.BLACK);
+        g2.fillRect(0, 0, widthOfScreen, heightOfScreen);
+        Point2D center = new Point2D.Float(800, 800);
+        float radius = 800;
+        float[] dist = {0.0f, 1.0f};
+        Color[] colors = {Color.yellow, Color.BLUE};
+        RadialGradientPaint p = new RadialGradientPaint(center, radius, dist, colors);
         for (Ellipse2D.Double ellipse : circles)
         {
-            g2.setColor(Color.white);
+            g2.setPaint(p);
             g2.draw(ellipse);
         }
         for (Line2D.Double line : lines)
         {
+            g2.setPaint(p);
             g2.draw(line);
         }
     }
-    private static void drawVisibilityCircle(Graphics2D g2d){
+
+
+
+    private static void drawVisibilityCircle(Graphics2D g2d)
+    {
         Point center = new Point(800, 800);
         float radius = 800;
-        float[] dist = { 0f, 1f};
-        Color[] colors = { new Color(255, 255, 0, 0), new Color(0, 0, 0, 255)};
+        float[] dist = {0f, 1f};
+        Color[] colors = {new Color(255, 255, 0, 0), new Color(0, 0, 0, 255)};
         //workaround to prevent background color from showing
-        drawBackGroundCircle(g2d, radius, Color.WHITE, center);
+        // drawBackGroundCircle(g2d, radius, Color.WHITE, center);
         drawGradientCircle(g2d, radius, dist, colors, center);
     }
 
-    private static void drawBackGroundCircle(Graphics2D g2d, float radius, Color color, Point2D center){
+    private static void drawBackGroundCircle(Graphics2D g2d, float radius, Color color, Point2D center)
+    {
 
         g2d.setColor(color);
         radius -= 1;//make radius a bit smaller to prevent fuzzy edge
@@ -97,7 +105,8 @@ public class GodAndMan extends JComponent implements ActionListener, Runnable
                 - radius, radius * 2, radius * 2));
     }
 
-    private static void drawGradientCircle(Graphics2D g2d, float radius, float[] dist, Color[] colors, Point2D center){
+    private static void drawGradientCircle(Graphics2D g2d, float radius, float[] dist, Color[] colors, Point2D center)
+    {
         RadialGradientPaint rgp = new RadialGradientPaint(center, radius, dist, colors);
         g2d.setPaint(rgp);
         g2d.fill(new Ellipse2D.Double(center.getX() - radius, center.getY() - radius, radius * 2, radius * 2));
