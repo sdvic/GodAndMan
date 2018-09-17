@@ -1,6 +1,6 @@
 package com.wintrisstech;
-/*************************************************************************/
- /* Initial ver 1.2 9/15/18                                                /
+/**************************************************************************/
+ /* Initial ver 1.3 9/16/18                                                /
  /* Copyright 2018 Vic Wintriss                                            /
  /*************************************************************************/
 
@@ -53,7 +53,7 @@ public class GodAndMan extends JComponent implements ActionListener, Runnable
             Line2D.Double newLine = (new Line2D.Double(x, y, outerRingRadius, outerRingRadius));
             lines.add(newLine);
         }
-        System.out.println("GodAndMan.run finished normally");
+        System.out.println("GodAndMan.run...Main thread finished normally");
     }
 
     public void paint(Graphics g)
@@ -80,13 +80,6 @@ public class GodAndMan extends JComponent implements ActionListener, Runnable
         }
         g2.setColor(Color.WHITE);
         g2.fill(man.getManShape());
-    }
-
-    private static void drawGradientCircle(Graphics2D g2d, float radius, float[] dist, Color[] colors, Point2D center)
-    {
-        RadialGradientPaint rgp = new RadialGradientPaint(center, radius, dist, colors);
-        g2d.setPaint(rgp);
-        g2d.fill(new Ellipse2D.Double(center.getX() - radius, center.getY() - radius, radius * 2, radius * 2));
     }
 
     @Override
