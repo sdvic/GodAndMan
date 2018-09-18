@@ -5,13 +5,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Ellipse2D;
 
-public class Man implements ActionListener
+class Man
 {
-    private int manx;
-    private int many;
-    private int manHeight = 10;
-    private int manWidth = 10;
+    private int manHeight = 2;
+    private int manWidth = 2;
     private Ellipse2D.Double manShape;
+    private int manSpeed = 2;
 
     Man(int startX, int starY)
     {
@@ -20,40 +19,14 @@ public class Man implements ActionListener
         manShape.y = starY;
     }
 
-    private void moveMan(int manMoveDirection)
+    void moveMan(int manDirection)//degrees
     {
-        manShape.x -= 1;
+        manShape.x -= (Math.sin(Math.toRadians(manDirection)) * manSpeed);
+        manShape.y += (Math.cos(Math.toRadians(manDirection)) * manSpeed);
     }
 
     Ellipse2D.Double getManShape()
     {
         return manShape;
-    }
-
-    public int getManx()
-    {
-        return (int) manShape.x;
-    }
-
-    void setManx(int manx)
-
-    {
-        manShape.x = manx;
-    }
-
-    public int getMany()
-    {
-        return (int) manShape.y;
-    }
-
-    void setMany(int many)
-    {
-        manShape.y = many;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e)
-    {
-        moveMan(4);
     }
 }
