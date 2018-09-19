@@ -10,13 +10,13 @@ class Man
     private int manHeight = 2;
     private int manWidth = 2;
     private Ellipse2D.Double manShape;
-    private int manSpeed = 2;
+    private int manSpeed = 25;
 
-    Man(int startX, int starY)
+    Man(Point manStartingPoing)
     {
         manShape = new Ellipse2D.Double(0, 0, manWidth, manHeight);
-        manShape.x = startX;
-        manShape.y = starY;
+        manShape.x = manStartingPoing.x;
+        manShape.y = manStartingPoing.y;
     }
 
     void moveMan(int manDirection)//degrees

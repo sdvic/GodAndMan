@@ -1,6 +1,6 @@
 package com.wintrisstech;
 /**************************************************************************/
- /* Initial ver 1.5 9/18/18                                                /
+ /* Initial ver 1.6 9/19/18                                                /
  /* Copyright 2018 Vic Wintriss                                            /
  /*************************************************************************/
 
@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class GodAndMan extends JComponent implements ActionListener, Runnable
 {
@@ -24,12 +25,15 @@ public class GodAndMan extends JComponent implements ActionListener, Runnable
     private int universeDiameter = heightOfScreen;
     private Point manStartingPoint = new Point(universeDiameter, universeDiameter/2);
     private Man man = new Man(manStartingPoint);
-    private ArrayList<Man> people = new ArrayList<Man>();
+    private ArrayList<Man> searchingSouls = new ArrayList<Man>();
+    private ArrayList<Man> lostSouls = new ArrayList<Man>();
+    private ArrayList<Man> christianSouls = new ArrayList<Man>();
+    private ArrayList<Man> heavenSouls = new ArrayList<Man>();
     private God god = new God(godLocation);
     private int manDirection = 135;
-    private int universePopulation = 100;
-    private int heavenPopulation;
-    private int lostInSpacePopulation;
+    private Iterator<Man> ssIt;
+    private Iterator<Man> lsIt;
+    private Point soulPoint;
 
     public static void main(String[] args)
     {
@@ -45,7 +49,6 @@ public class GodAndMan extends JComponent implements ActionListener, Runnable
         mainGameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainGameWindow.setVisible(true);
         paintTicker.start();
-
         for (int innerRingDiameter = 0; innerRingDiameter < universeDiameter + 10; innerRingDiameter += 10)
         {
             int innerRingRadius = innerRingDiameter / 2;
@@ -62,7 +65,8 @@ public class GodAndMan extends JComponent implements ActionListener, Runnable
         {
             int x = (int) (800 + (800 * Math.cos(Math.toRadians(angle))));
             int y = (int) (800 + (800 * Math.sin(Math.toRadians(angle))));
-            people.add(new Man(new Point(x, y)));
+            soulPoint = new Point(x, y);
+            searchingSouls.add(new Man(soulPoint));
         }
         System.out.println("GodAndMan.run...Main thread finished normally");
     }
@@ -77,36 +81,42 @@ public class GodAndMan extends JComponent implements ActionListener, Runnable
         float radius = outerRingRadius;
         float[] dist = {0.0f, 1.0f};
         Color[] colors = {Color.yellow, Color.BLUE};
+        ssIt = searchingSouls.iterator();
+        lsIt = lostSouls.iterator();
         RadialGradientPaint p = new RadialGradientPaint(center, radius, dist, colors);
-        for (Man man : people)
+        while(ssIt.hasNext())
         {
-            int xSquared = (int)(Math.pow((man.getManShape().x - 800), 2));
-            int ySquared =  (int)(Math.pow((man.getManShape().y - 800), 2));
+            Man soul = ssIt.next();
+            //lsIt.next();
+            int xSquared = (int)(Math.pow((soul.getManShape().x - 800), 2));
+            int ySquared =  (int)(Math.pow((soul.getManShape().y - 800), 2));
             int rSquared = (int)Math.pow(outerRingRadius, 2);
             if (xSquared + ySquared > rSquared)
             {
+                lostSouls.add(soul);
+                //searchingSouls.remove(soul);
                 g2.setColor(Color.red);
-                g2.fill(man.getManShape());
-                lostInSpacePopulation++;
+                g2.fill(soul.getManShape());
             }
             if (xSquared + ySquared < rSquared)
             {
                 g2.setColor(Color.WHITE);
-                g2.fill(man.getManShape());
+                g2.fill(soul.getManShape());
             }
             manDirection = (int)(Math.random() * 360);
-            man.moveMan(manDirection);
-            g2.fill(man.getManShape());
+            soul.moveMan(manDirection);
+            g2.fill(soul.getManShape());
             if (xSquared + ySquared < 200)
             {
-                man.getManShape().height = 100;
-                man.getManShape().width = 100;
-                heavenPopulation++;
+                soul.getManShape().height = 100;
+                soul.getManShape().width = 100;
+                heavenSouls.add(soul);
+                searchingSouls.remove(soul);/////////////////////////
             }
             if (xSquared + ySquared >200)
             {
-                man.getManShape().height = 2;
-                man.getManShape().width = 2;
+                soul.getManShape().height = 2;
+                soul.getManShape().width = 2;
             }
         }
         for (Ellipse2D.Double ellipse : circles)
@@ -125,10 +135,12 @@ public class GodAndMan extends JComponent implements ActionListener, Runnable
         }
         g2.setColor(Color.white);
         g2.setFont(new Font("Bank Gothic",Font.BOLD , 44));
-        g2.drawString("Souls arriving at heaven", 1800, 500);
+        g2.drawString("Souls in heaven", 1800, 500);
         g2.drawString("Souls lost in space", 1800, 700);
-        g2.drawString(heavenPopulation + "", 1800, 600);
-        g2.drawString(  lostInSpacePopulation + "", 1800, 800);
+        g2.drawString("Souls still searching", 1800, 900);
+        g2.drawString(heavenSouls.size() + "", 1800, 600);
+        g2.drawString(  lostSouls.size() + "", 1800, 800);
+        g2.drawString(  searchingSouls.size() + "", 1800, 1000);
     }
 
     @Override
